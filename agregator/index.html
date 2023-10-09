@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Агрегатор данных</title>    
+  </head>
+  <style>
+    * {
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    body {
+      padding: 40px 0;
+    }
+
+    section {
+      margin: 0 auto;
+      width: 1000px;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+      font-size: 40px;
+    }
+
+    .info-blok-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .info-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 15px;
+      border: 1px solid gray;
+      width: 200px;
+      height: 200px;
+    }
+
+    .value {
+      margin-bottom: 40px;
+      font-size: 40px;
+    }
+  </style>
+  <script src="jquery-3.7.0.min.js"></script>
+  <script>
+    $(function() {
+      let api = 'api.php';
+
+      let updateUsdCourse = function() {
+        let request = {'url': 'https://www.cbr.ru'};
+        $.get(api, request, function(response) {
+          /*/ В консоле результат
+          console.log($(response).find('._dollar + div').text());*/
+          let result = $(response).find('._dollar + div').text();
+          //Ищим value и меняем его содержимое
+          $('#usd-course > .value').text(result);
+
+          //На сайте пишим - document.querySelector('._dollar + div') -> берём соседний элемент, что вышло под кодом.
+        });
+        //На 9.10.2023г. 99,6762 ₽
+      }
+
+      let updateMoscowWeather = function() {
+        let request = {'url': 'https://www.pogoda.mail.ru/prognoz/moskva/'};
+        $.get(api, request, function(response) {
+          /*/ В консоле результат
+          console.log($(response).find('.information__content__temperature').text());*/
+          let result = $(response).find('.information__content__temperature').text();
+          //Ищим value и меняем его содержимое
+          $('#moscow-weather > .value').text(result + "С");
+
+          //На сайте пишим - document.querySelector('.information__content__temperature').innerText 
+        });
+        //На 9.10.2023г. +4&deg;С
+      }
+
+      let updateRuWikiArticlesCount = function() {
+        //Вставляем ссылку в поисковик https://www.ru.wikipedia.org/wiki/Русская_Википедия. она русские буквы переведёт в мусор, не исправляем и ставим себе как есть в код. Так наш агрегатор Википедия сработает. 
+        let request = {'url': 'https://ru.wikipedia.org/wiki/%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B0%D1%8F_%D0%92%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F'};
+        $.get(api, request, function(response) {
+          let result = $(response).find('[title="Служебная:Статистика"]').first().text();
+          //Ищим value и меняем его содержимое
+          $('#ruwiki-articles-count > .value').text(result);          
+        });
+        //На 9.10.2023г. 1 941 332
+      }
+
+      let updateSiteStatus = function() {
+        let request = {'url': 'http://warehouse2022.tmweb.ru/'};
+        $.get(api, request, function(response) {
+          //Ищим наличие строки. Если она есть, то сайт работает.
+          let result = response.indexOf('Агрегатор данных с сайтов') > 0 ? 'Работает' : 'Сломался'
+          //Ищим value и меняем его содержимое
+          $('#site-status > .value').text(result);          
+        });
+        // Работает 
+      }
+
+      //Обновляет данные
+      let updateAllData = function() {
+        updateUsdCourse();
+        updateMoscowWeather();
+        updateRuWikiArticlesCount();
+        updateSiteStatus();
+      }  
+
+      updateAllData();
+      // Обновляем каждые 2 сек.. https://doka.guide/js/setinterval/?ysclid=lnj2tcpv6k764661033
+      setInterval(updateAllData, 2000);
+    });
+  </script>
+  <body>
+    <section>
+      <h1>Агрегатор данных с сайтов</h1>
+    </section>
+    <section class="info-blok-container">
+      <div class="info-block" id="usd-course">
+        <h2>Курс доллара</h2>
+        <span class="value">&mdash;</span><!-- 99,6762 ₽ -->
+      </div>
+      <div class="info-block" id="moscow-weather">
+        <h2>Температура в&nbsp;Москве</h2>
+        <span class="value">&mdash;</span><!-- +4&deg;С -->
+      </div>
+      <div class="info-block" id="ruwiki-articles-count">
+        <h2>Статьи в&nbsp;Википедии</h2>
+        <span class="value">&mdash;</span><!-- 1 941 332 -->
+      </div>
+      <div class="info-block" id="site-status">
+        <h2>Статус работы&nbsp;сайта</h2>
+        <span class="value">&mdash;</span><!-- Работает -->
+      </div>
+    </section>
+  </body>
+</html>

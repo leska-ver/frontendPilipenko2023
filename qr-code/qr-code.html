@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Генератор QR-кодов для вашего сайта</title>
+    <style>
+      * {
+        margin: 0;
+        font-family: sans-serif;
+      }
+
+      body {
+        padding: 40px 0;
+      }
+
+      section {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-size: 50px;
+        margin-bottom: 40px;
+      }
+
+      .description {
+        margin-bottom: 40px;
+      }
+
+      .form {
+        display: flex;
+        justify-content: space-between;        
+        margin-bottom: 40px;
+      }
+
+      input[type="url"] {
+        font-size: 32px;
+        width: 70%;
+      }
+
+      button {
+        font-size: 28px;
+        cursor: pointer;
+      }
+
+      /*38:41 Украшаем стили для ошибки*/
+      .error-message {
+        display: none;
+        margin-bottom: 40px;
+        color: red;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .error-message-active {
+        display: block;
+      }
+      /* // 38:41 Украшаем стили для ошибки*/
+
+      hr {
+        margin-bottom: 40px;
+      }
+
+      .qrcode-container {
+        display: flex;
+        justify-content: center;
+      }
+
+      #qrcode {
+        width: 512px;
+        height: 512px;
+      }
+    </style>
+    <script type="text/javascript" src="qrcode.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // alert('YES');
+        
+        //Перенёс с 41:56 let makeCode =
+        let url = document.querySelector('[name="url"]'); 
+        //Перенёс с let qrcode 49:16
+        let qrcodeContainer = document.getElementById("qrcode"); 
+        /*38:41 Подключаем стили для ошибки*/
+        let errorMessage = document.querySelector('.error-message');
+
+        // 24:46 Скопировали с файла автора js-код, вставили к себе. Скрин "Скопировали автора код 24-46". И переписали.
+        var qrcode = new QRCode(qrcodeContainer, {// удалил 49:16 и создал для него отдельный let document.getElementById("qrcode"), . 1:00:24 вместо let  поставил var
+          width : 512,
+          height : 512
+        });
+
+        //40:29 Скрываем сообщение об ошибке когда мы в инпут вводим текст
+        let showErrorMessage = function(message) { //Показывает сообщение об ошибке
+          // 40:57 взял из if (url.value
+          errorMessage.innerHTML = message;//Заменил 'Введите адрес ресурса, который хотите закодировать' 56:00
+          errorMessage.classList.add('error-message-active');//Не правильно errorMessage.addClass 43:22
+          //56:55 шаблон закинули суда
+          // qrcodeContainer.innerHTML = ''; Удалил 1:02:00
+          //1:03:16 Меняем стили. Скрываем
+          qrcodeContainer.querySelector('img').style.display = 'none';
+          //1:03:29 Меняем стили. Удаляем
+          qrcodeContainer.querySelector('img').src = '';
+          //1:05:49 Меняем стили. Показываем. Код взят из ссылки 1:04:51
+          let canvas = qrcodeContainer.querySelector('canvas');
+          canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+          canvas.style.display = 'block';
+          url.focus();//56:55
+        } 
+
+        let hideErrorMessage = function() { //Скрывает сообщение об ошибке.
+          errorMessage.classList.remove('error-message-active');//Не правильно errorMessage.removeClass 43:22
+          errorMessage.innerHTML = '';//очистили сообщение
+          /*/59:11 с дублировали код, чтобы код имел безлимит Генерацию
+          qrcode = new QRCode(qrcodeContainer, { 
+            width : 512,
+            height : 512
+          });//59:11. Удалил код 1:00:57*/
+        } 
+
+        /*/ 49:12 Он будет удалять QR-код после удаления текста из инпута. Удалил
+        let clean = function() {
+          qrcodeContainer.querySelectorAll('*');
+        }*/
+
+        let makeCode = function() {		
+        // let url = document.querySelector('[name="url"]'); Перенёс наверх 41:56
+        
+        if (url.value == '') { //27:30 if (!url) тоже самое. url пока у нас равен пустой строке
+          /*38:41 Подключаем стили для ошибки .error-message-active он будет вместо alert-a. Перенёс в let showErrorMessage 40:57
+          errorMessage.innerHTML = 'Введите адрес ресурса, который хотите закодировать';
+          errorMessage.addClass('error-message-active');*/
+          // alert("Введите адрес ресурса!"); удалил 40:17
+          showErrorMessage('Введите адрес ресурса, который хотите закодировать');//41:28 showErrorMessage здесь мы показываем если у нас пустое сообщение. В скобки вставил 56:00
+          /*/ 47:20 Он будет удалять QR-код после удаления текста из инпута.
+          qrcode.clear(); Удалил 49:12. Здесь не сработал код. создали отдельный let*/
+          //50:00 Он будет удалять QR-код после удаления текста из инпута. Удалил
+          /*/56:55 шаблон закинули let showErrorMessage = function(message)
+          qrcodeContainer.innerHTML = '';
+          url.focus();*/
+          return;
+        }
+
+        //Шаблон 54:37. Передадим сообщение об ошибке 56:11
+        if (!url.value.match(/^[a-z]+:\/\//)) {
+          showErrorMessage('Адрес должен начинаться с протокола, \nнапример, http:// или https://');
+          /*/56:55 шаблон закинули let showErrorMessage = function(message)
+          qrcodeContainer.innerHTML = '';
+          url.focus();*/
+          return;
+        }
+        
+        qrcode.makeCode(url.value);
+      }
+
+        /*makeCode();удалил 28:41
+
+        $("#text").
+          on("blur", function () {
+            makeCode();
+          }).
+          on("keydown", function (e) {
+            if (e.keyCode == 13) {
+              makeCode();
+            }
+          });*/
+
+        //42:27 Вешаем событие. keypress - это нажатие кнопки. keyup – при отпускании.
+        url.addEventListener('keypress', function() {
+          hideErrorMessage();
+        })  
+
+        //45:03 Вешаем событие paste. Добавили обработчик на вставку ссылки в инпут.
+        url.addEventListener('paste', function() {
+          hideErrorMessage();
+        }) 
+
+        document.querySelector('button').addEventListener('click', function() {
+          makeCode();
+        });
+      });      
+    </script>
+  </head>
+  <body>
+    <section>
+      <h1>Генератор QR-кодов для вашего сайта</h1>
+      <p class="description">В&nbsp;поле ниже вставьте адрес вашего сайта и&nbsp;нажмите кнопку &laquo;Сгенерировать&raquo;, после чего ниже появится QR-код. Вы&nbsp;можете скопировать его или сохранить, нажав по&nbsp;нему правой кнопкой мыщи и&nbsp;выбрав соответствующий пункт меню.</p>
+    </section>
+    <section class="form">
+      <input type="url" name="url" placeholder="https://">
+      <button>Сгенерировать</button>
+    </section>
+    <!--19:37 Подключаем js ->  Вводим в поисковик qr code generation js -> Заходим на сайт https://davidshimjs.github.io/qrcodejs/ -> На сайте качаем .zip(файла) -> В .zip(файле) забираем в свой проект файл qrcode.min.js. В файле index.html(zip(файле)) автор показал как подключать QR-код -->
+    <!-- 21:37 Подключаем библиотеку в наш проект с index.html(zip(файле)) автора кода - <script type="text/javascript" src="qrcode.min.js"></script> Добавили .min, у нас скаченый файл с .min -->
+    <!-- 24:46 Скопировали с файла автора js-код, вставили к себе. Скрин "Скопировали автора код 24-46". И переписали. -->
+    <section>
+      <div class="error-message"></div>
+      <hr>
+    </section>
+    <section class="qrcode-container">
+      <div id="qrcode"></div>
+    </section>
+    <!-- 43:22 Где-то ошибка, ищем как классы в  javascript ставять. В поисковике пишем javascript add class to element -> https://stackoverflow.com/questions/507138/how-to-add-a-class-to-a-given-element -->
+    <!-- 45:03 Добавим обработчик на вставку ссылки в инпут. В поисковике пишем  js add event listener paste -> https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event -->
+    <!-- 47:20 Из библиотеки(https://davidshimjs.github.io/qrcodejs/)  забрали qrcode.clear(); Он будет удалять QR-код после удаления текста из инпута.  -->
+    <!-- 53:56 В поисковике пишем js match regex - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match -->
+    <!-- 1:04:51 Как удалит canvas в js -> Js canvas clear -> https://stackoverflow.com/questions/2142535/how-to-clear-the-canvas-for-redrawing -->
+  </body>
+</html>

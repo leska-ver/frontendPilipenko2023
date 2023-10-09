@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тур в Абхазию от агенства &laquo;Телепорт&raquo;</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,700;1,400&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- 27:37 подключаем jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <!-- 27:40 -->
+  <script>
+    $(function(){
+      // alert('Y');
+      // console.log('Yes');
+      /*/Модалка alert('') 31:15
+      $('.form-button').on('click', function() {
+        alert('Y');
+      });*/
+      //console.log('Yes') 31:54 После нажатия на кнопку в консоле появится и изчезнет YES
+      /*$('.form-button').on('click', function(){
+        console.log('YES');
+        //Приостановим изчезновение YES, нам пока не нужна отправка формы на сервер
+        return false;
+      });*/
+      /*/1. Вариант отправки формы на сервер
+      $('.form-button').on('click', function(){
+        let name = $('[name="name"]').val();
+        let phone = $('[name="phone"]').val();
+        let email = $('[name="email"]').val();
+        let data = {
+          'name': name,
+          'phone': phone,
+          'email': email
+        };
+        console.log(data);
+
+        return false;
+      });*/
+      /*/2. Вариант отправки формы на сервер. Сокращённый вариант. console.log(data)
+      $('.form-button').on('click', function(){
+        let data = {
+          'name': $('[name="name"]').val(),
+          'phone': $('[name="phone"]').val(),
+          'email': $('[name="email"]').val()
+        };
+        console.log(data);
+
+        return false;
+      });*/
+      //3. Вариант отправки формы на сервер. Сокращённый вариант. Модалка alert('')
+      $('.form-button').on('click', function(){
+        let data = {
+          'name': $('[name="name"]').val(),
+          'phone': $('[name="phone"]').val(),
+          'email': $('[name="email"]').val()
+        };
+        /*$.post('api.php', data, function(){
+          alert('Данные отправлены')
+        })*/
+        //47:00
+        $.post('api.php', data, function(response){
+          // alert(response)
+          //if будет пользователям оповещать что их заявка принята 50:50
+          if (response == 1) {
+            $('[name="name"]').val('');
+            $('[name="phone"]').val('');
+            $('[name="email"]').val('');
+            alert('Ваша заявка принята!\nМы с вами свяжемся!');
+          } else {
+            alert('Что-то пошло не так :(\nПовторите попытку позже') 
+          }
+        })
+
+        return false;
+      });
+    });
+  </script>
+  <style>
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    section {
+      max-width: 1168px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-family: 'Roboto', sans-serif;
+      font-size: 60px;
+      font-weight: 600;
+      line-height: 70px;
+      text-align: left;
+      margin: 80px 0;
+    }
+
+    h2 {
+      font-family: 'Roboto', sans-serif;
+      font-size: 46px;
+      font-weight: 600;
+      line-height: 54px;
+      text-align: left;
+    }
+
+    .main-picture {
+      width: 100%;
+      margin-bottom: 60px;
+    }
+
+    .description {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 80px;
+    }
+
+    .description p {
+      width: 45%;
+      font-family: 'Roboto', sans-serif;
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 30px;
+      text-align: left;
+    }
+
+    .form-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 50px;
+      padding: 37px 50px;
+      border-radius: 20px;
+      background-color: #f1f1f1;
+    }
+
+    .form-container > * {
+      width: 50%;
+    }
+
+    .form {
+      width: 416px;
+    }
+
+    .form-field {
+      width: 100%;
+      font-family: 'Roboto', sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 30px;
+      text-align: left;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 24px;
+      margin-bottom: 8px;
+    }
+
+    .form-button {
+      border: 0;
+      border-radius: 10px;
+      background-color: #3d3bff;
+      color: #FFF;
+      font-family: 'Roboto', sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 30px;
+      text-align: left;
+      margin-top: 24px;
+      padding: 11px 54px;
+      cursor: pointer;
+    }
+  </style> 
+</head>
+<body>
+  <section>
+    <h1>
+      Тур в Абхазию от агентства «Телепорт»
+    </h1>
+  </section>
+  <section>
+    <img class="main-picture" src="picture.png" alt="">
+  </section>
+  <section class="description">
+    <p>
+      Вас ждёт незабываемая экскурсия на&nbsp;озеро Рица, Юпшарский каньон и&nbsp;водопад Мужские слёзы. <b>Бесплатные дегустации</b> вина, чая и&nbsp;мёда сделают отдых ещё приятнее.
+    </p>
+    <p>
+      А&nbsp;самые смелые туристы смогут <b>отправиться на&nbsp;сплав</b> по&nbsp;горной реке и&nbsp;полетать на&nbsp;параплане.
+    </p>
+  </section>
+  <section class="form-container">
+    <h2>
+      Оставьте заявку и&nbsp;забронируйте тур по&nbsp;минимальной цене!
+    </h2>
+    <form class="form">
+      <input class="form-field" name="name" type="text" placeholder="Имя">
+      <input class="form-field" name="phone" type="tel" placeholder="Телефон">
+      <input class="form-field" name="email" type="email" placeholder="E-mail">
+      <button class="form-button">Записаться</button>
+    </form>
+  </section>
+</body>
+</html>
